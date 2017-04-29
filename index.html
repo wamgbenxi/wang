@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style>
+*{
+ padding:0px;
+ margin:0px;
+}
+ #big{
+  width:800px;
+  height:500px;
+  background-color:#000000;
+  margin:0px auto;
+  position:relative;
+  overflow:hidden;
+ }
+#start{
+  width:100px;
+  height:40px;
+  color:#ff0000;
+  background-color:#aaaaaa;
+  text-align:center;
+  line-height:40px;
+  font-size:30px;
+  position:absolute;
+  top:500px;
+  left:350px;
+  z-index:2
+}
+#again{
+  width:100px;
+  height:40px;
+  color:#ff0000;
+  background-color:#aaaaaa;
+  text-align:center;
+  line-height:40px;
+  font-size:25px;
+  position:absolute;
+  top:500px;
+  left:350px;
+  z-index:2
+}
+</style>
+<script src="animate.js"></script>
+<script>
+window.onload=function  () {
+ var big=document.getElementById("big");
+ var start=document.getElementById("start");
+  var again=document.getElementById("again");
+ var timeout=document.getElementById("timeout");
+  myAnimate(start,{top:230},400,Tween.Back.easeOut);
+again.onclick=start.onclick=function  (e) {
+   var ev=e||window.event;
+   //清空所有div重新开始
+    var divs=big.getElementsByTagName("div");
+
+		  var length=divs.length
+		  if(length>0){
+		  for (var i=0; i<length; i++) {
+                 big.removeChild(divs[0])
+		  }
+
+}
+//让开始和再一次移动到下面
+   myAnimate(start,{top:500},400,Tween.Back.easeIn);
+   myAnimate(again,{top:500},400,Tween.Back.easeIn);
+
+  //创建目标块
+  var  hoho=document.createElement("div");
+    css(hoho,"width",25);
+	css(hoho,"height",25);
+	css(hoho,"backgroundColor","red");
+	css(hoho,"position","absolute");
+	big.appendChild(hoho);
+	css(hoho,"top",(big.offsetHeight-hoho.offsetHeight)/2)
+	css(hoho,"left",(big.offsetWidth-hoho.offsetWidth)/2);
+   
+//创建小的div 并且让运行
+function creat () {	
+ 
+   var arr=[];
+   //初始top;
+   var arrt=[];
+   //初始left
+   var arrl=[];
+//创建小的div
+  for (var i=0; i<15; i++) {
+    var arr1=[0,500]
+    var arr1index=Math.floor(Math.random()*arr1.length); 
+	var t=arr1[arr1index]; 
+    var divs=document.createElement("div");
+    css(divs,"width",(1+Math.random())*4);
+	css(divs,"height",(1+Math.random())*4);
+	css(divs,"backgroundColor",getcolor());
+	css(divs,"position","absolute");
+	css(divs,"top",t+Math.random()*20)
+	css(divs,"left",Math.random()*800)
+	big.appendChild(divs)
+	arr.push(divs);
+	arrt.push(divs.offsetTop);
+	arrl.push(divs.offsetLeft);
+  }
+
+    for (var i=0; i<15; i++) {
+	var arr2=[0,800]
+    var arr2index=Math.floor(Math.random()*arr2.length); 
+	var l=arr2[arr2index]; 
+	
+    var divs=document.createElement("div");
+    css(divs,"width",(1+Math.random())*4);
+	css(divs,"height",(1+Math.random())*4);
+	css(divs,"backgroundColor",getcolor());
+	css(divs,"position","absolute");
+	css(divs,"top",Math.random()*500);
+	css(divs,"left",l+Math.random()*20);
+	big.appendChild(divs);
+	arr.push(divs);
+	arrt.push(divs.offsetTop);
+	arrl.push(divs.offsetLeft);
+  }  
+  
+  //小方块开始移动
+  for (var i=0; i<arr.length; i++) {
+//    myAnimate(arr[i],{top:(big.offsetHeight-hoho.offsetHeight)/2+30*Math.random(),
+//	left:(big.offsetWidth-hoho.offsetWidth)/2+30*Math.random()},(0.5+Math.random())*5000,Tween.Linear )
+		(function  (i) {
+			myAnimate(arr[i],{top:(hoho.offsetTop)*2-arrt[i],
+			left:(hoho.offsetLeft)*2-arrl[i]},5000*(1+Math.random()),Tween.Linear,function  () {
+			  big.removeChild(arr[i]);arrl=[];arrt=[]; 
+
+			},hoho,again)
+		})(i)
+  
+	}
+	
+
+	 }
+	 //先执行一次
+	 creat()
+	//定时器
+hoho.time=	setInterval(function  () {
+       //if( !hoho.close){
+	   // clearInterval(t)
+	     
+//		 var divs=big.getElementsByTagName("div");
+//		  var length=divs.length
+//		  for (var i=0; i<length; i++) {
+//                 big.removeChild(divs[0])
+//		  }
+//		   myAnimate(again,{top:230},400,Tween.Back.easeOut);
+	 //  }else{
+	     creat()
+	  // }
+
+	 
+	},5000)
+
+    
+	  
+	     
+	 
+  //对目标块的操作
+  
+document.onkeydown=function  (e) {
+    var ev=e||window.event;
+
+	if(document.t){
+	  clearInterval(document.t)
+	}
+	if(!hoho.time){
+	  return ;
+	}
+	if(ev.keyCode===37){
+	document.t=  setInterval(function  () {
+	   if(hoho.offsetLeft<=0){
+	     clearInterval(document.t)
+           hoho.style.left=0+"px"
+	   }else{
+	  hoho.style.left=hoho.offsetLeft-7+"px";
+	  }
+	  },20)
+	}
+
+	if(ev.keyCode===38){
+	 
+	document.t=  setInterval(function  () {
+	  if(hoho.offsetTop<=0){
+	     clearInterval(document.t)
+		 hoho.style.top=0+"px";
+	   }else{
+	  hoho.style.top=hoho.offsetTop-7+"px";
+	  }
+	  },20)
+	}
+
+	if(ev.keyCode===39){
+	
+	document.t=  setInterval(function  () {
+	  if(hoho.offsetLeft>=big.offsetWidth-hoho.offsetWidth){
+	     clearInterval(document.t)
+		  hoho.style.left=big.offsetWidth-hoho.offsetWidth+"px";
+	   }else{
+	  hoho.style.left=hoho.offsetLeft+7+"px";
+	  }
+	  },20)
+	}
+
+	if(ev.keyCode===40){
+	document.t=  setInterval(function  () {
+	  if(hoho.offsetTop>=big.offsetHeight-hoho.offsetHeight){
+	   hoho.style.top=big.offsetHeight-hoho.offsetHeight+"px";
+	     clearInterval(document.t)
+	   }else{
+	  hoho.style.top=hoho.offsetTop+7+"px";
+	  }
+	  },20)
+	}
+    
+  }
+  //键盘抬起，停止
+document.onkeyup=function  () {
+  clearInterval(document.t)
+  document.t=null
+}
+
+ }
+
+   
+  
+}
+//获得随机颜色
+function getcolor () {
+   var str=Math.ceil(Math.random()*0xffffff).toString(16)
+   while(str.length<6){
+     str="0"+str;
+   }
+   str="#"+str;
+   return str
+}
+</script>
+</head>
+
+<body>
+<div id="big">
+ <ul id="start">开始</ul>
+ <ul id="again">再玩一次</ul>
+</div>
+
+</body>
+</html>
